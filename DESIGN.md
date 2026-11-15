@@ -36,6 +36,7 @@ AutoML must not run unless explicitly requested. It must avoid using held-out te
 ```python
 from typing import Protocol, Any
 
+
 class ModelAdapter(Protocol):
     def fit(self, X: Any, y: Any, **kwargs: Any) -> None: ...
     def predict(self, X: Any) -> Any: ...
