@@ -25,7 +25,7 @@ This policy applies to RaceML repositories, issues, pull requests, discussions, 
 
 ## Reporting
 
-Report conduct concerns privately to a repository maintainer through a private contact method listed on the repository profile or in its community contact information. Do not disclose sensitive details in a public issue. If no private contact is available, ask a maintainer to establish one without publishing incident details.
+Report conduct concerns privately by emailing **timihack.it@gmail.com** with the subject **RaceML Code of Conduct Report**. Include what happened, where and when it happened, and any relevant links or screenshots you are comfortable sharing. Do not disclose sensitive details in a public issue. The maintainer will acknowledge reports when possible, review the information confidentially, and communicate any action that can appropriately be shared. If the report concerns the person receiving this email, an independent review cannot be guaranteed until another trusted maintainer is appointed.
 
 ## Enforcement
 
