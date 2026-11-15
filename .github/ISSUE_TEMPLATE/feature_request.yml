@@ -1,0 +1,43 @@
+name: Feature request
+description: Propose a feature or API change
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the training or execution problem, not just the desired implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior and API
+      description: Show an example if possible.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Integrated backend
+        - Native engine
+        - CPU scheduling
+        - Memory management
+        - Incremental learning
+        - Optional AutoML
+        - Public API
+        - Documentation or tooling
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and trade-offs
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or benchmark proposal
+      description: If performance-related, explain how improvement could be measured.

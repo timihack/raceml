@@ -1,0 +1,40 @@
+name: Performance report
+description: Report a reproducible performance regression or bottleneck
+title: "[Performance]: "
+labels: ["performance", "needs-triage"]
+body:
+  - type: textarea
+    id: workload
+    attributes:
+      label: Workload and model configuration
+      description: Use a public or synthetic dataset; include shape, dtypes, backend and parameters.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Hardware and software
+      description: CPU, cores/threads, RAM, OS, Python, RaceML and backend versions.
+    validations:
+      required: true
+  - type: textarea
+    id: methodology
+    attributes:
+      label: Benchmark methodology
+      description: Warmup, repeated runs, thread limits, seeds, measurement commands, and comparison baseline.
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: Raw results
+      description: Training times, peak resident memory, model quality and variance where measured.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction instructions
+      render: shell
+    validations:
+      required: true
