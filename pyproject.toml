@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "raceml"
+version = "0.1.0.dev0"
+description = "Resource-Aware Compute Engine for Machine Learning"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "RaceML Contributors" }
+]
+keywords = [
+    "machine-learning",
+    "model-training",
+    "cpu-optimization",
+    "resource-aware",
+    "classification",
+    "regression"
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+dependencies = [
+    "numpy>=1.26",
+    "scikit-learn>=1.5",
+]
+
+[project.optional-dependencies]
+lightgbm = ["lightgbm>=4.0"]
+xgboost = ["xgboost>=2.0"]
+catboost = ["catboost>=1.2"]
+automl = ["optuna>=4.0"]
+all = [
+    "lightgbm>=4.0",
+    "xgboost>=2.0",
+    "catboost>=1.2",
+    "optuna>=4.0"
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.9",
+    "mypy>=1.10",
+    "build>=1.2"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/raceml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
