@@ -1,6 +1,6 @@
 # RaceML Benchmark Protocol
 
-**Status:** Proposed methodology. No results have been measured.
+**Status:** Reconciled methodology for Phase 0A review. No performance results have been measured.
 
 ## 1. Research questions
 
@@ -16,7 +16,7 @@ Direct scikit-learn, LightGBM and XGBoost workflows using identically prepared i
 
 ## 3. Dataset matrix
 
-Choose openly licensed, version-pinned datasets representing: small numeric classification; medium mixed categorical classification; regression; sparse high-dimensional features; missing-value-heavy data; larger-than-memory input when a backend genuinely supports out-of-core processing. Record URLs, licenses, checksums, shapes and preprocessing steps before experiments. Do not claim datasets were tested until they are downloaded and run.
+Choose openly licensed, version-pinned datasets representing: small numeric classification; medium mixed categorical classification; regression; sparse high-dimensional features; missing-value-heavy data; larger-than-memory input when a backend genuinely supports out-of-core processing. This is a methodology matrix, not a promise that every workload is supported in v0.1.0; larger-than-memory experiments depend on later backend capability. Record URLs, licenses, checksums, shapes and user-side preparation steps before experiments. Benchmark fixtures prepare and split data outside RaceML and outside training timers. Do not claim datasets were tested until they are downloaded and run.
 
 ## 4. Hardware and environment
 
@@ -25,7 +25,7 @@ Record CPU model, physical/logical cores, RAM, OS/kernel, Python, package versio
 ## 5. Metrics
 
 - End-to-end wall-clock duration: from prepared input handoff through fitted model, with phases also reported.
-- Native fit duration separately.
+- Selected backend fit duration separately, labeled as an integrated backend or an independently developed native RaceML algorithm.
 - Peak process-tree RSS; specify sampling interval and measurement limitations.
 - Prediction latency and throughput after warm-up.
 - Classification: accuracy, F1, ROC-AUC where valid; regression: RMSE and MAE.
@@ -52,9 +52,17 @@ Define exactly which workloads qualify before announcing success. Report aggrega
 
 Each run: dataset ID/checksum, split ID, baseline or RaceML, algorithm, parameters, seed, environment, threads, timing phases, peak RSS, quality metrics, status, errors and measurement method. Save machine-readable JSON/CSV plus a human-readable summary.
 
+Record benchmark-owned split metadata in the harness; library reports record it only when the user supplies it. Document whether timings include monitoring, fingerprinting and metadata collection, and use comparable instrumentation for direct-backend and RaceML runs. RSS reports must identify parent/process-tree scope, sampling interval, process aggregation and measurement limitations; Python allocation tracking alone does not establish peak RSS.
+
 ## 10. Benchmark governance
 
 Do not invent benchmark numbers or label targets as achieved. Commit scripts and configurations. Any published speedup must state its denominator, dataset, hardware and measurement scope.
+
+Preserve raw run data and link it from each report. The storage location and retention policy remain to be approved before the first benchmark; ignored local `benchmark-results/` output is not sufficient evidence retention by itself. Commit only public/synthetic, reviewed measurement data, never private dataset rows.
+
+## 11. Decisions required before measurement
+
+Before the Phase 1 comparison, approve and record the exact workloads or synthetic generators, versions/checksums, shapes/dtypes, seeds and splits, matched parameters/threads, quality tolerances, repetition/warm-up protocol, timing boundaries, RSS method/sampling, and raw-result destination. No workload, numeric tolerance or speedup is selected by this reconciliation. Later AutoML and incremental comparisons require their own declared budgets, quality criteria and equivalent baselines. See the [decision register](docs/PHASE_0_REPORT.md#remaining-technical-decisions).
 
 ## Training-only benchmark boundary
 

@@ -1,7 +1,9 @@
 # RaceML Product Requirements Document
 
-**Status:** Draft for approval  
-**Target release:** v0.1.0  
+**Status:** Reconciled specification for Phase 0A review; not implemented
+
+**Target release:** v0.1.0
+
 **Project:** Resource-Aware Compute Engine for Machine Learning
 
 ## 1. Product statement
@@ -98,12 +100,16 @@ Do not treat these as universal release guarantees. Pre-register workloads, base
 
 ## 9. Release acceptance
 
-All must-have requirements either pass tests or are explicitly deferred with version change and rationale. Benchmarks must publish both wins and losses. No invented measurements. API and install examples must be tested before public documentation describes them as functional.
+All must-have requirements either pass tests or are explicitly deferred with version change and rationale. Phase 0A preserves every v0.1.0 requirement; it does not authorize any deferral. AutoML and incremental learning remain required for v0.1.0 even though AutoML is optional for users. XGBoost retains the conditional inclusion stated above. Benchmarks must publish both wins and losses. No invented measurements. API and install examples must be tested before public documentation describes them as functional.
 
-## 10. Open decisions
+## 10. Recorded decisions and remaining decisions
 
-Exact Python version support, license, backend version matrix, persistence format, API naming, benchmark datasets, resource-budget enforcement strategy and release date require approval or testing.
+Settled boundaries: Apache-2.0 licensing; `RaceMLClassifier` / `RaceMLRegressor` and optional `RaceMLAutoClassifier` / `RaceMLAutoRegressor`; user-prepared inputs; Python-first execution; integrated backends before independent native algorithms; manual training by default; observed memory budgets without an initial hard-cap guarantee.
 
-## Scope revision — training only and dual engines
+Remaining decisions include the verified Python/OS/backend matrix, dependency groups, exact estimator contracts and algorithm identifiers, persistence formats and trust policy, input compatibility details, resource and AutoML budget semantics, benchmark workloads and tolerances, and release date. Packaging currently declares Python >=3.12; CI configures Ubuntu/Python 3.12. Neither establishes support for every newer Python version or platform. See the [Phase 0 decision register](docs/PHASE_0_REPORT.md#remaining-technical-decisions).
 
-Users prepare their own features and targets; RaceML does not load files, clean data, impute, engineer features, or split datasets. The initial API is `RaceMLClassifier` / `RaceMLRegressor`. The long-term product includes integrated model backends **and** independently developed native RaceML algorithms. Native algorithms are research work and are not required for v0.1.0. See [SCOPE.md](SCOPE.md) and [NATIVE_ENGINE.md](NATIVE_ENGINE.md). Any earlier mention of user-facing data preparation is superseded by this section.
+## 11. Training-only scope and dual engines
+
+Users prepare their own features, targets and validation splits; RaceML does not load files, clean data, impute, engineer features, or split datasets. The initial API is `RaceMLClassifier` / `RaceMLRegressor`. The long-term product includes integrated model backends **and** independently developed native RaceML algorithms. Native algorithms are research work and are not required for v0.1.0. See [SCOPE.md](SCOPE.md) and [NATIVE_ENGINE.md](NATIVE_ENGINE.md).
+
+The [roadmap](ROADMAP.md#v010-requirement-traceability) maps v0.1.0 requirements to implementation milestones. Phase 0A changes specifications only; setup changes belong to Phase 0B after review and approval.

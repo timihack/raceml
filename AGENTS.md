@@ -8,6 +8,8 @@ RaceML = Resource-Aware Compute Engine for Machine Learning. Open-source, genera
 
 ## Source of truth
 
+`SCOPE.md` and `NATIVE_ENGINE.md`, together with the mandatory decisions below, constrain all specifications. Older passages cannot expand these boundaries. Within those boundaries:
+
 1. `PRD.md` defines scope and acceptance criteria.
 2. `ARCHITECTURE.md` defines component boundaries.
 3. `DESIGN.md` defines intended APIs and contracts.
@@ -16,6 +18,8 @@ RaceML = Resource-Aware Compute Engine for Machine Learning. Open-source, genera
 6. `TESTING.md` defines verification.
 
 If documents conflict, stop and describe the conflict instead of guessing. Propose a minimal documentation change and request approval before changing a high-level decision.
+
+The [Phase 0 report](docs/PHASE_0_REPORT.md) records reconciliation findings, unresolved decisions and milestone gates. A proposed ADR or illustrative API is not evidence of implementation or approval. Phase 0A must be reviewed and approved before Phase 0B setup changes or feature implementation begin.
 
 ## Before any coding task
 

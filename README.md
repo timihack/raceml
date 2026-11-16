@@ -3,7 +3,7 @@
 
   **Resource-Aware Compute Engine for Machine Learning**
 
-  **Faster training. Less memory. One interface.**
+  **Aiming for faster training and lower memory use through one interface.**
 
   [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
   ![Status: Pre-development](https://img.shields.io/badge/status-pre--development-orange)
@@ -36,7 +36,7 @@ predictions = model.predict(X_test)
 
 ## Planned integrations
 
-Initial integrations: scikit-learn, LightGBM, and XGBoost. Later work may include CatBoost, incremental estimators, native algorithms, and GPU support.
+Planned v0.1.0 integrations: LightGBM and scikit-learn, with XGBoost included if its adapter contract and tests pass. Optional AutoML and incremental updates for at least one compatible classifier and regressor remain v0.1.0 requirements. Later research may include CatBoost, independently developed native algorithms, and GPU support.
 
 ## Documentation
 
@@ -47,6 +47,7 @@ Initial integrations: scikit-learn, LightGBM, and XGBoost. Later work may includ
 - [Native engine](NATIVE_ENGINE.md)
 - [Benchmarks](BENCHMARKS.md)
 - [Roadmap](ROADMAP.md)
+- [Phase 0 report and remaining decisions](docs/PHASE_0_REPORT.md)
 - [Agent instructions](AGENTS.md)
 - [Testing](TESTING.md)
 - [Contributing](CONTRIBUTING.md)
