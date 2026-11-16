@@ -1,6 +1,6 @@
 # ADR 0004 — Phase 1 estimator and backend fit contracts
 
-**Status:** Proposed for review; no estimator implementation
+**Status:** Accepted in [PR #4](https://github.com/timihack/raceml/pull/4). Initial core foundations implemented for separate review; no public estimator implementation.
 
 **Date:** 2026-11-16
 

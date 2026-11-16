@@ -1,6 +1,6 @@
 # RaceML Architecture
 
-**Status:** Established boundaries preserved; Phase 0 reconciliation merged. Detailed Phase 1 contracts under review; training components are not implemented.
+**Status:** Established boundaries preserved; Phase 1 contracts accepted in PR #4. Initial internal core foundations implemented for review; training adapters and public estimators are not implemented.
 
 ## 1. Architectural principles
 
@@ -54,7 +54,7 @@ flowchart TD
 
 Adapters must implement fit, predict, get_params, metadata, capability discovery and, where supported, predict_proba, update, save/load. Unsupported operations raise typed errors. No silent model substitution.
 
-The minimal registry, capability declarations and errors must precede the first LightGBM adapter in Phase 1. Capability-dependent operations are not universally required methods on the base protocol. [ADR 0002](docs/decisions/0002-training-contracts.md) records the reconciliation; the [Phase 1 contract proposal](docs/PHASE_1_CONTRACTS.md) specifies operation routing, fitted-state/schema rules and typed failures for review before implementation.
+The minimal registry, capability declarations and errors precede the first LightGBM adapter in Phase 1. Capability-dependent operations are not universally required methods on the base protocol. [ADR 0002](docs/decisions/0002-training-contracts.md) records the reconciliation; the accepted [Phase 1 contract specification](docs/PHASE_1_CONTRACTS.md) defines operation routing, fitted-state/schema rules and typed failures. The [core report](docs/PHASE_1_CORE_REPORT.md) records the initial implementation boundary and evidence.
 
 Core execution separates RaceML configuration from backend constructor and fit options. The selected adapter validates the operation-specific options, handles required input conversion and maps user-prepared validation data through its verified backend/version path. Unknown options, conflicting aliases and options that violate the training-only boundary fail explicitly. These responsibilities stay in the existing core/input/backend layers; no generic preprocessing or parameter-translation engine is added.
 
@@ -64,7 +64,7 @@ Core execution separates RaceML configuration from backend constructor and fit o
 - `memory_limit` initially represents a monitored budget. A strict cap needs a subprocess supervisor and platform-specific enforcement.
 - Benchmarks measure the entire process tree where possible, not only Python allocations.
 - For out-of-core workflows, support is declared per backend and algorithm, not assumed universally.
-- Thread-setting conflicts, memory-budget units and overrun behavior remain technical decisions; no silent precedence or hard-enforcement guarantee is implied.
+- Accepted configuration defines byte-budget units and thread/main-seed conflict policy; concrete backend aliases, observation methods and overrun reporting remain adapter/report gates. No silent precedence or hard-enforcement guarantee is implied.
 
 ## 7. Data representation
 

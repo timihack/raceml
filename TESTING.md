@@ -1,6 +1,6 @@
 # RaceML Testing Strategy
 
-**Status:** Phase 0A and 0B merged; Phase 1 contract acceptance proposal under review. No estimators are implemented.
+**Status:** Phase 0A/0B and Phase 1 contracts merged. Core configuration/registry checks added for review; no public estimators or real backend adapters are implemented.
 
 ## Test levels
 
@@ -30,6 +30,10 @@ RACEML_DIST_DIR=dist uv run --locked pytest tests/integration/test_packaging.py
 
 Each artifact's metadata must match the declared version, Python requirement, NumPy-only core and optional groups, with both `LICENSE` and `NOTICE` preserved. Each is then installed with its base dependencies into a fresh environment; a separate `python -I` process verifies the import comes from that installation and optional libraries/tuners are absent and not imported. No `--no-deps` installation shortcut is used. Missing/ambiguous artifact sets fail when checks are enabled. These tests perform development/CI package-index access; ordinary imports and normal tests do not initiate downloads.
 
+The installed-artifact probe also imports and exercises the core configuration and empty registry from the fresh installation, so an editable checkout cannot mask missing core package files. The [core report](docs/PHASE_1_CORE_REPORT.md) records focused tests, typed fake-adapter checks, isolated import checks and the remaining implementation boundary.
+
+CI type-checks `src/raceml` and `tests/integration/test_core_contracts.py` together so the fake adapter's structural conformance to the base protocol is verified as well as its runtime composition.
+
 Use a fresh output directory to avoid stale archives. Record environment, commands, results, resolved versions and unrun combinations in the [Phase 0B report](docs/PHASE_0B_REPORT.md). No backend fit/predict, input conversion, full extras compatibility or performance support is established by these setup checks.
 
 ## Documentation and Phase 0A checks
@@ -55,7 +59,7 @@ No failing required tests; examples executable; dependency groups installable; b
 
 ## Phase 1 contract acceptance proposal
 
-After approval of [ADR 0004](docs/decisions/0004-phase-1-estimator-contracts.md), turn the [contract specification](docs/PHASE_1_CONTRACTS.md) into focused tests before the real adapter tests. This documentation branch adds no implementation tests and makes no claim that these cases pass.
+[ADR 0004](docs/decisions/0004-phase-1-estimator-contracts.md) was accepted in PR #4. Turn the [contract specification](docs/PHASE_1_CONTRACTS.md) into focused tests before the real adapter tests. Initial configuration/registry and typed fake-adapter tests are recorded in the core report; the table below remains the full acceptance plan, not a claim that every estimator behavior is implemented or tested.
 
 | Area | Required proposed acceptance cases |
 |---|---|

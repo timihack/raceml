@@ -34,7 +34,7 @@ jobs:
         run: uv run --locked ruff format --check src/ tests/
 
       - name: Type check
-        run: uv run --locked mypy src/raceml
+        run: uv run --locked mypy src/raceml tests/integration/test_core_contracts.py
 
       - name: Test
         run: uv run --locked pytest

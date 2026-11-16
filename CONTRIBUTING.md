@@ -136,7 +136,7 @@ Before submitting a pull request:
 ```bash
 uv run ruff check .
 uv run ruff format --check src/ tests/
-uv run mypy src/raceml
+uv run mypy src/raceml tests/integration/test_core_contracts.py
 uv run pytest
 ```
 
