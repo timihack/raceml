@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
@@ -9,6 +9,7 @@ description = "Resource-Aware Compute Engine for Machine Learning"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 authors = [
     { name = "RaceML Contributors" }
 ]
@@ -30,15 +31,22 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.26",
-    "scikit-learn>=1.5",
 ]
 
 [project.optional-dependencies]
+sklearn = ["scikit-learn>=1.5"]
+pandas = ["pandas>=2.2"]
+polars = ["polars>=1.0"]
+arrow = ["pyarrow>=16.0"]
 lightgbm = ["lightgbm>=4.0"]
 xgboost = ["xgboost>=2.0"]
 catboost = ["catboost>=1.2"]
 automl = ["optuna>=4.0"]
 all = [
+    "scikit-learn>=1.5",
+    "pandas>=2.2",
+    "polars>=1.0",
+    "pyarrow>=16.0",
     "lightgbm>=4.0",
     "xgboost>=2.0",
     "catboost>=1.2",

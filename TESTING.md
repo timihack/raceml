@@ -1,6 +1,6 @@
 # RaceML Testing Strategy
 
-**Status:** Reconciled verification plan for Phase 0A review. Only the scaffold import test currently exists.
+**Status:** Phase 0A reconciled and merged; Phase 0B setup checks prepared for review. No estimators are implemented.
 
 ## Test levels
 
@@ -15,9 +15,22 @@
 
 Run formatting/linting, type checks, package build and tests on a verified Python/OS matrix. Keep expensive model benchmarks in scheduled or manually triggered jobs.
 
-Current CI configures Ubuntu/Python 3.12, default development dependencies, lint, format, mypy and pytest. It does not build wheel/sdist artifacts, test clean artifact installation or run backend integrations. Package metadata declares Python >=3.12; the verified support matrix remains a decision. Phase 0A records these gaps without changing CI or packaging.
+The Phase 0A baseline CI configured Ubuntu/Python 3.12, default development dependencies, lint, format, mypy and pytest, without artifact builds or isolated installs. Phase 0B retains that platform baseline and adds locked synchronization, wheel/sdist builds and artifact installation checks. Hosted results must be verified on the pull request; adding a job is not evidence it passed.
 
-Phase 0B, after approval, verifies builds and isolated wheel/sdist installation and aligns the initial support/dependency policy. Feature milestones add backend/input and optional-dependency jobs as their code arrives. Manual-mode checks must run where the tuner is absent and verify it is neither imported nor invoked. A successful check on empty modules is not evidence that planned estimators work.
+[ADR 0003](docs/decisions/0003-package-and-support-policy.md) records the approved policy: NumPy-only core, optional backend/table packages, Ubuntu/Python 3.12 for initial setup verification, and no verified claim for other Python/OS combinations. Package metadata still declares Python >=3.12; lower dependency bounds are not a tested minimum-version matrix. Feature milestones add backend/input and optional-dependency jobs as their code arrives. Manual-mode checks must run where the tuner is absent and verify it is neither imported nor invoked. A successful check on empty modules is not evidence that planned estimators work.
+
+## Packaging checks
+
+`tests/integration/test_packaging.py` checks root artifact ignore boundaries during normal tests. Its four artifact checks skip unless `RACEML_DIST_DIR` identifies a directory containing exactly one wheel and one source archive:
+
+```bash
+uv build --no-sources
+RACEML_DIST_DIR=dist uv run --locked pytest tests/integration/test_packaging.py
+```
+
+Each artifact's metadata must match the declared version, Python requirement, NumPy-only core and optional groups, with both `LICENSE` and `NOTICE` preserved. Each is then installed with its base dependencies into a fresh environment; a separate `python -I` process verifies the import comes from that installation and optional libraries/tuners are absent and not imported. No `--no-deps` installation shortcut is used. Missing/ambiguous artifact sets fail when checks are enabled. These tests perform development/CI package-index access; ordinary imports and normal tests do not initiate downloads.
+
+Use a fresh output directory to avoid stale archives. Record environment, commands, results, resolved versions and unrun combinations in the [Phase 0B report](docs/PHASE_0B_REPORT.md). No backend fit/predict, input conversion, full extras compatibility or performance support is established by these setup checks.
 
 ## Documentation and Phase 0A checks
 

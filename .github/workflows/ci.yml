@@ -25,16 +25,24 @@ jobs:
         run: uv python install 3.12
 
       - name: Install dependencies
-        run: uv sync --frozen
+        run: uv sync --locked
 
       - name: Lint
-        run: uv run ruff check .
+        run: uv run --locked ruff check .
 
       - name: Format
-        run: uv run ruff format --check src/ tests/
+        run: uv run --locked ruff format --check src/ tests/
 
       - name: Type check
-        run: uv run mypy src/raceml
+        run: uv run --locked mypy src/raceml
 
       - name: Test
-        run: uv run pytest
+        run: uv run --locked pytest
+
+      - name: Build source distribution and wheel
+        run: uv build --no-sources
+
+      - name: Verify artifacts and isolated installations
+        env:
+          RACEML_DIST_DIR: dist
+        run: uv run --locked pytest tests/integration/test_packaging.py
