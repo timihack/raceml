@@ -132,9 +132,24 @@ import importlib.util
 from pathlib import Path
 import sys
 import raceml
+import raceml.core.config
+from raceml.core.config import EstimatorConfig
+from raceml.core.errors import InvalidConfigurationError
+from raceml.core.registry import Registry
 
 assert Path(raceml.__file__).resolve().is_relative_to(Path(sys.prefix).resolve())
+assert Path(raceml.core.config.__file__).resolve().is_relative_to(
+    Path(sys.prefix).resolve()
+)
 assert importlib.metadata.version("raceml") == sys.argv[1]
+config = EstimatorConfig(algorithm="example", task="classification", memory_limit="4GB")
+assert config.memory_budget_bytes == 4_000_000_000
+try:
+    Registry().create(config)
+except InvalidConfigurationError:
+    pass
+else:
+    raise AssertionError("An unregistered algorithm must not resolve")
 for name in (
     "sklearn", "lightgbm", "xgboost", "catboost",
     "optuna", "pandas", "polars", "pyarrow",

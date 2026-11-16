@@ -1,6 +1,6 @@
 # RaceML Detailed Design
 
-**Status:** Phase 0 reconciliation merged; detailed Phase 1 contract proposal under review. Code samples are illustrative and not implemented.
+**Status:** Phase 1 contracts accepted in PR #4; initial internal core foundations implemented for review. Public estimator examples remain illustrative and unimplemented.
 
 ## 1. Proposed user-facing API
 
@@ -20,7 +20,7 @@ report = model.resource_report()
 
 Regression follows the same pattern with `RaceMLRegressor`. Constructor kwargs must be validated against backend capabilities; unsupported parameters must fail explicitly.
 
-Public `fit` returns the fitted estimator (`self`); `resource_report()` returns a separate report. The concrete [Phase 1 contract proposal](docs/PHASE_1_CONTRACTS.md) specifies defaults, requested-parameter inspection, fit option routing, fitted state, initial input/schema rules and errors for review before coding. [ADR 0004](docs/decisions/0004-phase-1-estimator-contracts.md) records the choices and alternatives; its proposals are not implemented APIs.
+Public `fit` returns the fitted estimator (`self`); `resource_report()` returns a separate report. The accepted [Phase 1 contract specification](docs/PHASE_1_CONTRACTS.md) defines defaults, requested-parameter inspection, fit option routing, fitted state, initial input/schema rules and errors. [ADR 0004](docs/decisions/0004-phase-1-estimator-contracts.md) records the choices and alternatives; acceptance does not make the public estimator APIs implemented.
 
 ## 2. Optional automation
 
@@ -38,16 +38,18 @@ search.fit(X_train, y_train, validation_data=(X_valid, y_valid))
 ```python
 from typing import Protocol, Any
 
+from raceml.core.protocols import ModelCapabilities
+
 
 class ModelAdapter(Protocol):
     def fit(self, X: Any, y: Any, **kwargs: Any) -> None: ...
     def predict(self, X: Any) -> Any: ...
     def get_params(self) -> dict[str, Any]: ...
-    def capabilities(self) -> dict[str, bool]: ...
+    def capabilities(self) -> ModelCapabilities: ...
     def metadata(self) -> dict[str, Any]: ...
 ```
 
-This is an illustrative minimum protocol, not final typing. Adapter `fit` mutates adapter state and returns `None` in this proposal; public estimator `fit` returns `self`. Final signatures, capability records, parameter round-trip rules and fitted-state errors must be reviewed before Phase 1 implementation. `predict_proba`, online update and persistence belong to capability-specific contracts. `partial_fit` must not appear as universally supported in the base protocol; expose it via an optional capability or a separate protocol. Registry metadata records task, input constraints, backend version and serialization support.
+The initial typed base protocol and `ModelCapabilities` are implemented in `src/raceml/core/protocols.py`. Adapter `fit` mutates adapter state and returns `None`; the accepted public estimator contract returns `self`, but public estimators are not implemented yet. `predict_proba`, online update and persistence belong to capability-specific contracts. `partial_fit` must not appear as universally supported in the base protocol; expose it via an optional capability or a separate protocol. Full registry catalogs still need task/input/version/parameter/serialization declarations when real adapters are added.
 
 Each adapter declares constructor and fit options separately for its verified backend/version path. A backend's variadic `**kwargs` is not blanket permission to accept unknown names. The [routing proposal](docs/PHASE_1_CONTRACTS.md#4-validation-data-and-native-fit-arguments) maps explicit user-prepared validation data, rejects competing aliases/sources, and preserves backend-native logging/callback semantics. Unsupported options are never ignored or moved silently between constructor and fit.
 
@@ -61,7 +63,7 @@ Each adapter declares constructor and fit options separately for its verified ba
 - Backend parameters: namespaced or validated against backend constructor.
 - Validation: explicit user-prepared validation data, with no internal splitting and no held-out test data used for selection.
 
-The Phase 1 proposal retains flat backend constructor keywords and native fit keywords, requires `algorithm`, proposes `cpu_cores=1`, `random_state=None` and `memory_limit=None`, and rejects duplicate thread/main-seed aliases. These concrete choices await review. Initial Phase 1 selection is proposed as `lightgbm` only; the initial scikit-learn estimator list and identifiers remain Phase 2 decisions. See [constructor and fit options](docs/PHASE_1_CONTRACTS.md#3-constructor-options-and-fit-options).
+The accepted Phase 1 contract retains flat backend constructor keywords and native fit keywords, requires `algorithm`, sets `cpu_cores=1`, `random_state=None` and `memory_limit=None`, and rejects duplicate thread/main-seed aliases. Initial Phase 1 selection is `lightgbm` only, once its adapter is implemented; the initial scikit-learn estimator list and identifiers remain Phase 2 decisions. See [constructor and fit options](docs/PHASE_1_CONTRACTS.md#3-constructor-options-and-fit-options).
 
 ## 5. Input validation and conversion
 
@@ -79,7 +81,7 @@ The [initial numeric input/schema proposal](docs/PHASE_1_CONTRACTS.md#5-phase-1-
 
 `ResourcePlan` holds requested thread count, memory budget and optional time budget. `ResourceReport` records observed wall time, CPU and peak RSS, measurement method and limitations. Resource planning must not silently override user algorithm settings.
 
-An in-process monitored memory budget is not a hard cap. Memory units, observation boundaries, RSS sampling, thread-conflict rules and overrun behavior remain open. No strict time or memory enforcement is implied for an already-running backend fit.
+An in-process monitored memory budget is not a hard cap. Accepted byte units are parsed by the core configuration, without allocating or enforcing that budget. Observation boundaries, RSS sampling, concrete backend alias validation and overrun reporting remain implementation gates. No strict time or memory enforcement is implied for an already-running backend fit.
 
 ## 8. Incremental subsystem
 
@@ -89,14 +91,14 @@ Three separate capabilities: `online_update`, `warm_start`, `full_retrain`. An `
 
 - `BackendUnavailableError`
 - `UnsupportedCapabilityError`
-- `UnsupportedUpdateError` (proposed specialization of `UnsupportedCapabilityError` for an update without `online_update` support)
+- `UnsupportedUpdateError` (specialization of `UnsupportedCapabilityError` for an update without `online_update` support)
 - `InvalidConfigurationError`
 - `DataSchemaError`
-- `NotFittedError` (Phase 1 proposal for operations requiring a successful fit)
+- `NotFittedError` (for operations requiring a successful fit; public estimators are not yet implemented)
 - `ResourceBudgetExceededError` (only when an enforceable mechanism exists)
 - `UnsafeModelLoadError`
 
-The Phase 1 proposal adds `NotFittedError` and a [built-in-based inheritance tree](docs/PHASE_1_CONTRACTS.md#6-fitted-state-outputs-and-failures), without a mandatory scikit-learn dependency. Review before implementation. The enforceable-budget error is reserved for a future enforcement mechanism and must not imply one exists initially; persistence types remain a Phase 2 gate.
+The initial core implements `NotFittedError` and the accepted [built-in-based inheritance tree](docs/PHASE_1_CONTRACTS.md#6-fitted-state-outputs-and-failures), without a mandatory scikit-learn dependency. The enforceable-budget error is reserved and not defined until an enforcement mechanism exists; persistence types remain a Phase 2 gate.
 
 ## 10. Persistence
 

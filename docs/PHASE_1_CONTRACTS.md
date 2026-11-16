@@ -1,6 +1,6 @@
 # RaceML Phase 1 Estimator Contract Proposal
 
-**Status:** Proposed for review, not implemented. Approval is required before coding these contracts. Phase 0A and 0B are merged; this document does not complete the Phase 1 vertical slice.
+**Status:** Accepted in [PR #4](https://github.com/timihack/raceml/pull/4). Initial core foundations are implemented for separate review; public estimators and the full Phase 1 vertical slice remain incomplete. See the [core implementation report](PHASE_1_CORE_REPORT.md).
 
 **Date:** 2026-11-16
 
@@ -8,7 +8,7 @@
 
 This proposal resolves Phase 1 portions of D02 (estimator/adapter contracts) and D03 (initial input/schema compatibility), plus configuration portions of D05. It preserves [SCOPE.md](../SCOPE.md), [NATIVE_ENGINE.md](../NATIVE_ENGINE.md), optional AutoML, the NumPy-only core and all v0.1.0 requirements. No source, tests, dependencies, CI or backend integrations are changed here.
 
-Public additions proposed beyond the earlier illustrative examples are `random_state`, `sample_weight`, a public `get_params()`, documented fitted attributes and `NotFittedError`. They make reproducibility, training weights, configuration round trips and pre-fit failures explicit. They add no architecture layer or dependency. The existing illustrative constructor keywords, `validation_data`, fit keyword forwarding, prediction, report and capability-dependent operations are made precise below. These choices require review, rather than being presented as already approved APIs.
+Public additions accepted beyond the earlier illustrative examples are `random_state`, `sample_weight`, a public `get_params()`, documented fitted attributes and `NotFittedError`. They make reproducibility, training weights, configuration round trips and pre-fit failures explicit. They add no architecture layer or dependency. The existing illustrative constructor keywords, `validation_data`, fit keyword forwarding, prediction, report and capability-dependent operations are made precise below. These choices were reviewed in PR #4; acceptance is not evidence of implemented public APIs.
 
 Phase 1 delivers only the `lightgbm` registry entry for classification/regression. No algorithm is selected by default. Later scikit-learn identifiers/estimators need Phase 2 review; XGBoost remains conditional for v0.1.0, CatBoost remains later work, and no native RaceML identifier is selected. A backend dependency being installed does not register an implemented adapter automatically.
 
@@ -164,6 +164,8 @@ Remaining decisions must be resolved before their dependent tasks:
 The proposed acceptance cases are listed in [TESTING.md](../TESTING.md#phase-1-contract-acceptance-proposal). No backend integration or benchmark is run by this documentation change.
 
 ## 9. Proposal verification record
+
+This section is the historical verification snapshot for the documentation-only contract PR, before PR #4 was merged. Current implementation scope and evidence are recorded separately in the core report linked above.
 
 Changed files are `DESIGN.md`, `ARCHITECTURE.md`, `TESTING.md`, `ROADMAP.md`, this specification and [ADR 0004](decisions/0004-phase-1-estimator-contracts.md). The two pre-existing empty local model placeholders remain untracked and untouched. No source, tests, dependencies, setup, original PRD requirements or mandatory scope/native boundaries changed. Work remains unstaged, uncommitted and unpushed for the user.
 
