@@ -1,6 +1,6 @@
 # RaceML Detailed Design
 
-**Status:** Reconciled interface proposal for Phase 0A review; code samples are illustrative and not implemented. Established scope and naming are preserved; contract clarifications below require review before implementation.
+**Status:** Phase 0 reconciliation merged; detailed Phase 1 contract proposal under review. Code samples are illustrative and not implemented.
 
 ## 1. Proposed user-facing API
 
@@ -20,7 +20,7 @@ report = model.resource_report()
 
 Regression follows the same pattern with `RaceMLRegressor`. Constructor kwargs must be validated against backend capabilities; unsupported parameters must fail explicitly.
 
-The proposed public `fit(X, y, ...)` returns the fitted estimator (`self`). Training configuration and metadata remain associated with that estimator; `resource_report()` returns a separate report. This resolves the earlier ambiguity about returning a model/report tuple without adding another public method. Exact fitted attributes, refit behavior, signatures and return types must be finalized before Phase 1 coding.
+Public `fit` returns the fitted estimator (`self`); `resource_report()` returns a separate report. The concrete [Phase 1 contract proposal](docs/PHASE_1_CONTRACTS.md) specifies defaults, requested-parameter inspection, fit option routing, fitted state, initial input/schema rules and errors for review before coding. [ADR 0004](docs/decisions/0004-phase-1-estimator-contracts.md) records the choices and alternatives; its proposals are not implemented APIs.
 
 ## 2. Optional automation
 
@@ -49,6 +49,8 @@ class ModelAdapter(Protocol):
 
 This is an illustrative minimum protocol, not final typing. Adapter `fit` mutates adapter state and returns `None` in this proposal; public estimator `fit` returns `self`. Final signatures, capability records, parameter round-trip rules and fitted-state errors must be reviewed before Phase 1 implementation. `predict_proba`, online update and persistence belong to capability-specific contracts. `partial_fit` must not appear as universally supported in the base protocol; expose it via an optional capability or a separate protocol. Registry metadata records task, input constraints, backend version and serialization support.
 
+Each adapter declares constructor and fit options separately for its verified backend/version path. A backend's variadic `**kwargs` is not blanket permission to accept unknown names. The [routing proposal](docs/PHASE_1_CONTRACTS.md#4-validation-data-and-native-fit-arguments) maps explicit user-prepared validation data, rejects competing aliases/sources, and preserves backend-native logging/callback semantics. Unsupported options are never ignored or moved silently between constructor and fit.
+
 ## 4. Configuration
 
 - Task: classification or regression.
@@ -59,13 +61,15 @@ This is an illustrative minimum protocol, not final typing. Adapter `fit` mutate
 - Backend parameters: namespaced or validated against backend constructor.
 - Validation: explicit user-prepared validation data, with no internal splitting and no held-out test data used for selection.
 
-The parameter namespace, seed defaults, algorithm identifiers and the initial scikit-learn estimator list remain decisions. The Phase 0A recommendation is to reject conflicting RaceML/backend thread settings rather than silently select precedence; its exact validation rules must be approved before implementation.
+The Phase 1 proposal retains flat backend constructor keywords and native fit keywords, requires `algorithm`, proposes `cpu_cores=1`, `random_state=None` and `memory_limit=None`, and rejects duplicate thread/main-seed aliases. These concrete choices await review. Initial Phase 1 selection is proposed as `lightgbm` only; the initial scikit-learn estimator list and identifiers remain Phase 2 decisions. See [constructor and fit options](docs/PHASE_1_CONTRACTS.md#3-constructor-options-and-fit-options).
 
 ## 5. Input validation and conversion
 
 `DataAdapter` checks shape, target length, column schema, dtype compatibility and missing-value handling. It reports whether a conversion occurred. Never silently drop or reorder features. Record feature names and order for prediction-time validation.
 
 The existing illustrative `DataAdapter` name denotes an internal input adapter only. It provides no loading, cleaning, imputation, encoding, feature engineering or splitting API. Algorithm-native handling may be passed through only when supported and documented. Sparse layouts, target types, categorical/missing-value compatibility and named-versus-positional input checks require explicit compatibility decisions before their implementations.
+
+The [initial numeric input/schema proposal](docs/PHASE_1_CONTRACTS.md#5-phase-1-input-and-schema-proposal) defines a concrete dense NumPy/pandas subset and its failure behavior. Broader dtype/container paths still require declared compatibility; no arbitrary dtype or zero-copy support is implied.
 
 ## 6. Model subsystem
 
@@ -88,10 +92,11 @@ Three separate capabilities: `online_update`, `warm_start`, `full_retrain`. An `
 - `UnsupportedUpdateError` (proposed specialization of `UnsupportedCapabilityError` for an update without `online_update` support)
 - `InvalidConfigurationError`
 - `DataSchemaError`
+- `NotFittedError` (Phase 1 proposal for operations requiring a successful fit)
 - `ResourceBudgetExceededError` (only when an enforceable mechanism exists)
 - `UnsafeModelLoadError`
 
-The complete inheritance tree and pre-fit failure type remain to be finalized before their operations are implemented. The enforceable-budget error is reserved for a future enforcement mechanism and must not imply one exists initially.
+The Phase 1 proposal adds `NotFittedError` and a [built-in-based inheritance tree](docs/PHASE_1_CONTRACTS.md#6-fitted-state-outputs-and-failures), without a mandatory scikit-learn dependency. Review before implementation. The enforceable-budget error is reserved for a future enforcement mechanism and must not imply one exists initially; persistence types remain a Phase 2 gate.
 
 ## 10. Persistence
 
@@ -118,7 +123,7 @@ src/raceml/
   native/  # independent algorithms only in a later research milestone
 ```
 
-This reconciled module map is proposed for review in [ADR 0002](docs/decisions/0002-training-contracts.md). It aligns input responsibilities with the existing `input/` package and places integrated adapters under `models/backends/`; `engine/` represents the training execution already described in the architecture. `evaluation/validation.py` concerns supplied validation data and metrics, never splitting. The map creates no new architecture layer and is not a requirement to create empty files in advance. The repository's unanchored artifact ignore rules currently hide `models/` source directories; correcting those rules belongs to Phase 0B after approval.
+This module map was reconciled in [ADR 0002](docs/decisions/0002-training-contracts.md) and merged in Phase 0A. It aligns input responsibilities with the existing `input/` package and places integrated adapters under `models/backends/`; `engine/` represents the training execution already described in the architecture. `evaluation/validation.py` concerns supplied validation data and metrics, never splitting. The map creates no new architecture layer and is not a requirement to create empty files in advance. Phase 0B anchored artifact ignore rules so they no longer hide `models/` source directories. Existing empty local placeholders remain untracked; this proposal adds no source files.
 
 ## 12. Design acceptance
 

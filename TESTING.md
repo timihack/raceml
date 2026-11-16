@@ -1,6 +1,6 @@
 # RaceML Testing Strategy
 
-**Status:** Phase 0A reconciled and merged; Phase 0B setup checks prepared for review. No estimators are implemented.
+**Status:** Phase 0A and 0B merged; Phase 1 contract acceptance proposal under review. No estimators are implemented.
 
 ## Test levels
 
@@ -52,6 +52,23 @@ For specification-only changes, check local Markdown links and anchors, balanced
 ## Release gate
 
 No failing required tests; examples executable; dependency groups installable; backend support matrix documented; known benchmark regressions disclosed.
+
+## Phase 1 contract acceptance proposal
+
+After approval of [ADR 0004](docs/decisions/0004-phase-1-estimator-contracts.md), turn the [contract specification](docs/PHASE_1_CONTRACTS.md) into focused tests before the real adapter tests. This documentation branch adds no implementation tests and makes no claim that these cases pass.
+
+| Area | Required proposed acceptance cases |
+|---|---|
+| Configuration and lazy imports | Required known algorithm; invalid cores/booleans/seed/budget; requested-configuration round trip before fit; constructor/inspection do not import a concrete backend or tuner. |
+| Constructor versus fit routing | Fake adapter records exact option names/values at the correct operation; unknown and unreviewed options rejected; no silent migration, dropping or trial search. Real adapter checks its installed version's declared catalogs. |
+| Validation data | Canonical pair mapped for the verified version; explicit native validation forms checked; duplicate canonical/native sources, missing pairs, conflicting aliases, mismatched auxiliary arrays and file-based inputs fail before backend training. |
+| Logging and callbacks | Supported callbacks forwarded without validation-time invocation or copying; fit-time `verbose` accepted only on a supporting backend/version, with a clear LightGBM failure; no callback representation/data in reports. |
+| Input/schema ownership | Initial numeric NumPy/pandas inputs; invalid dimensions, lengths, labels, weights and dtypes; supported native NaNs preserved; incompatible/missing/reordered/extra columns and named/unnamed mixing fail. Inputs are not mutated, reindexed, split, encoded or imputed. |
+| State and prediction | `fit -> self`; requested config unchanged; preflight failure preserves old state, training failure invalidates it; refit is fresh training; label/regression output shapes, probability shape/class order, row order, fitted attributes and typed pre-fit failures. |
+| Capabilities and manual mode | Missing backend guidance; unknown algorithm distinct from missing dependency; task mismatch and unsupported probability/update/continuation fail explicitly; no fallback fit or tuner import/invocation. |
+| Resources and reproducibility | Declared thread/seed mappings and alias conflicts; observed budget semantics; report snapshots exclude private data. Resolve D05–D07 measurement/fingerprint/workload gates before asserting report or benchmark correctness. |
+
+Run unit/fake-adapter checks first, then installed LightGBM classifier/regressor integration and direct-backend parity under matched settings. Test version-specific validation routing without assuming all installed versions share one fit signature. Do not add XGBoost/CatBoost integration merely to demonstrate the routing concept; those adapters retain their roadmap milestones.
 
 ## Suggested tools
 

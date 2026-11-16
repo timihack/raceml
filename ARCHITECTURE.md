@@ -1,6 +1,6 @@
 # RaceML Architecture
 
-**Status:** Established boundaries preserved; reconciled specification for Phase 0A review. Not implemented.
+**Status:** Established boundaries preserved; Phase 0 reconciliation merged. Detailed Phase 1 contracts under review; training components are not implemented.
 
 ## 1. Architectural principles
 
@@ -54,7 +54,9 @@ flowchart TD
 
 Adapters must implement fit, predict, get_params, metadata, capability discovery and, where supported, predict_proba, update, save/load. Unsupported operations raise typed errors. No silent model substitution.
 
-The minimal registry, capability declarations and errors must precede the first LightGBM adapter in Phase 1. Capability-dependent operations are not universally required methods on the base protocol. Exact capability types and fitted-state behavior must be finalized before implementation; see [ADR 0002](docs/decisions/0002-training-contracts.md).
+The minimal registry, capability declarations and errors must precede the first LightGBM adapter in Phase 1. Capability-dependent operations are not universally required methods on the base protocol. [ADR 0002](docs/decisions/0002-training-contracts.md) records the reconciliation; the [Phase 1 contract proposal](docs/PHASE_1_CONTRACTS.md) specifies operation routing, fitted-state/schema rules and typed failures for review before implementation.
+
+Core execution separates RaceML configuration from backend constructor and fit options. The selected adapter validates the operation-specific options, handles required input conversion and maps user-prepared validation data through its verified backend/version path. Unknown options, conflicting aliases and options that violate the training-only boundary fail explicitly. These responsibilities stay in the existing core/input/backend layers; no generic preprocessing or parameter-translation engine is added.
 
 ## 6. Resource boundaries
 
