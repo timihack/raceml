@@ -57,14 +57,33 @@ Install `uv` if it is not already installed.
 
 ```bash
 uv python install 3.12
-uv sync
+uv sync --locked
 ```
+
+The initial setup verification baseline is Ubuntu/Python 3.12. Other Python/OS combinations and backend compatibility remain unverified. NumPy is the only core runtime dependency. Install optional dependencies explicitly when working on their milestones:
+
+```bash
+uv sync --locked --extra sklearn
+uv sync --locked --extra lightgbm --extra pandas
+uv sync --locked --extra polars --extra arrow
+```
+
+The `xgboost`, `catboost`, `automl` and `all` extras also exist. These groups declare dependencies; they do not establish working adapters, conversions or AutoML. `all` includes every declared optional group. See [ADR 0003](docs/decisions/0003-package-and-support-policy.md).
 
 Run the existing tests:
 
 ```bash
 uv run pytest
 ```
+
+Packaging tests are opt-in locally and run in CI after artifact construction:
+
+```bash
+uv build --no-sources
+RACEML_DIST_DIR=dist uv run --locked pytest tests/integration/test_packaging.py
+```
+
+Use a fresh artifact output directory if `dist/` contains older versions. The checks expect one wheel and one source archive, verify metadata and licensing, and install each with base dependencies into a separate clean environment. They may access the package index during development/CI; RaceML imports do not download packages. The install checks use isolated Python outside the checkout to avoid accidentally testing the editable source tree.
 
 ### 4. Synchronize your fork
 

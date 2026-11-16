@@ -29,13 +29,13 @@ Thumbs.db
 !.env.example
 
 # Local datasets and model artifacts
-data/
-datasets/
-artifacts/
-models/
+/data/
+/datasets/
+/artifacts/
+/models/
 *.pkl
 *.joblib
 *.onnx
 
 # Benchmark output
-benchmark-results/
+/benchmark-results/
