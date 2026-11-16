@@ -1,6 +1,6 @@
 # RaceML Development Roadmap
 
-**Status:** Milestone order approved; reconciled tasks and acceptance criteria under Phase 0A review. Implementation has not begun. No release date is committed.
+**Status:** Phase 0A and 0B merged; Phase 1 contract proposal under review. Estimator implementation has not begun. No release date is committed.
 
 ## Phase 0 — Specification and project setup
 
@@ -23,6 +23,8 @@ Correct artifact ignore rules that hide package source, align approved dependenc
 ## Phase 1 — Working vertical slice
 
 **Depends on:** Phase 0B and finalized Phase 1 contracts.
+
+First review [ADR 0004](docs/decisions/0004-phase-1-estimator-contracts.md) and the [Phase 1 contract specification](docs/PHASE_1_CONTRACTS.md). Approve constructor-versus-fit routing, defaults, initial numeric inputs, output/state/error behavior and manual-mode isolation before coding. Installed backend parameter catalogs require tests before support claims; resource measurement/fingerprint/benchmark choices remain gates before reporting and comparison tasks.
 
 Establish minimal configuration, errors, adapter protocol, registry and capabilities before the first adapter. Build `RaceMLClassifier` / `RaceMLRegressor`, prepared NumPy/pandas validation, a LightGBM adapter, basic CPU-thread mapping and wall-time/RSS reporting. Add a benchmark runner and matched direct-LightGBM comparison with predeclared workloads and quality tolerances.
 
