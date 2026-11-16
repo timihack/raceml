@@ -15,16 +15,21 @@ Read the following documents:
 - `ARCHITECTURE.md`
 - `DESIGN.md`
 - `SCOPE.md`
+- `NATIVE_ENGINE.md`
 - `AGENTS.md`
 - `CODE_OF_CONDUCT.md`
 
-For changes involving native algorithms, read `NATIVE_ENGINE.md` and `BENCHMARKS.md`.
+For performance or native algorithm changes, also read `BENCHMARKS.md`. Read `TESTING.md` for verification and `ROADMAP.md` for milestone scope. The [Phase 0 report](docs/PHASE_0_REPORT.md) lists unresolved decisions and review gates.
 
 Discuss major API changes, dependencies, and architecture proposals through a GitHub issue before implementing them.
+
+Phase 0A reconciles specifications only. Phase 0B setup changes and implementation must wait for Phase 0A review and approval. Preserve the v0.1.0 AutoML and incremental-learning requirements; optional AutoML means users opt in, not that its delivery is deferred.
 
 ## Contribution workflow
 
 External contributors should use the **Fork → Branch → Pull Request** workflow.
+
+Maintainers with repository access may use a feature branch in the upstream repository and open a pull request against `main`. Keep unrelated work on separate branches. Automated agents must follow `AGENTS.md` authorization requirements for pushes, merges and publication; fork synchronization examples below do not authorize an agent to push to `main`.
 
 ### 1. Fork the repository
 
